@@ -1,4 +1,6 @@
-/bin/*
-/test/*
-/.classpath
-/.project
+*.class
+.classpath
+.project
+.settings/
+dist/
+classes/
