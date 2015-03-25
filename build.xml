@@ -37,6 +37,7 @@
         <javac destdir="${build.dir}" debug="true" deprecation="false"
             optimize="false" failonerror="true" source="1.6" target="1.6">
             <src path="${src.dir}" />
+            <src path="${tests.dir}" />
             <classpath refid="program-paths" />
         </javac>
 
@@ -50,11 +51,25 @@
         <jar compress="true" jarfile="${dist.dir}/${jar.name}.jar">
             <fileset dir="${build.dir}">
                 <include name="**/*" />
+                <exclude name="**/*Test.*"/>
+                <exclude name="feed4j"/>
+                <exclude name="AllTests.*"/>
             </fileset>
         </jar>
 
     </target>
-
+    
+    <!-- ================================================================= -->
+    <!--   Run jUnit tests                                                 -->
+    <!-- ================================================================= -->
+    <target name="test" depends="compile">
+        <junit fork="yes" haltonfailure="yes">
+            <test name="AllTests" />
+            <formatter type="plain" usefile="false" />
+            <classpath refid="program-paths" />
+        </junit>
+    </target>
+    
     <!-- ================================================================= -->
     <!--    Javadoc                                                        -->
     <!-- ================================================================= -->
