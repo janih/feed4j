@@ -23,8 +23,10 @@ public class FeedParser {
 	 * @param url
 	 *            The feed URL.
 	 * @return A Feed object containing the information extracted from the feed.
+	 * @throws IOException
+	 *             I/O error during contents retrieving.
 	 * @throws FeedIOException
-	 *             I/O error during conetnts retrieving.
+	 *             I/O error during contents retrieving.
 	 * @throws FeedXMLParseException
 	 *             The document retrieved is not valid XML.
 	 * @throws UnsupportedFeedException
@@ -44,8 +46,10 @@ public class FeedParser {
 	 * @param userAgent
 	 *            User agent string.
 	 * @return A Feed object containing the information extracted from the feed.
-	 * @throws FeedIOException
-	 *             I/O error during conetnts retrieving.
+	 * @throws IOException
+	 *             I/O error during contents retrieving.
+	 * @throws FeedIOException 
+	 *             I/O error during contents retrieving.
 	 * @throws FeedXMLParseException
 	 *             The document retrieved is not valid XML.
 	 * @throws UnsupportedFeedException
@@ -53,13 +57,14 @@ public class FeedParser {
 	 *             known by the parser.
 	 */	
 	public static Feed parse(URL url, String userAgent) throws IOException, FeedIOException, FeedXMLParseException, UnsupportedFeedException {
+		InputStream is = null;
 		try {
 			URLConnection con = url.openConnection();
 			if (userAgent != null) {
 				con.addRequestProperty("User-Agent", userAgent);
 			}
 			con.connect();
-			InputStream is = con.getInputStream();
+			is = con.getInputStream();
 			SAXReader saxReader = new SAXReader();
 			Document document = saxReader.read(is);
 			int code = FeedRecognizer.recognizeFeed(document);
@@ -77,6 +82,11 @@ public class FeedParser {
 			}
 		} catch (DocumentException e) {
 			throw new FeedXMLParseException(e);
+		}
+		finally {
+			if (is != null) { 
+				is.close();
+			}
 		}
 	}
 }
